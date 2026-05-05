@@ -4,6 +4,8 @@ Preprost web app za naročanje in upravljanje zdravniških terminov.
 
 Narejeno kot prvi pravi vadni projekt v Next.js 2024. Originalni Supabase backend je zamenjan z lokalno SQLite bazo, tako da vse teče lokalno brez cloud storitev.
 
+Je LE desktop-app.
+
 ## Setup
 
 ```bash
