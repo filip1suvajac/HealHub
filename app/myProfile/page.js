@@ -5,8 +5,8 @@ import ProtectedRoute from "../_components/ProtectedRoute";
 import { useState, useEffect } from "react";
 import { FaRegEdit } from "react-icons/fa";
 import { getPatientAuthID, updatePatientDetails } from "../_lib/data-service";
-import supabase from "../_lib/supabase";
 import Image from "next/image";
+import { getStoredUser } from "../_lib/apiAuth";
 
 // Component for input fields when in edit mode
 function EditInput({ setterFunc, placeholderText, type = "text", value }) {
@@ -35,25 +35,13 @@ export default function Page() {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        console.log("Fetching session...");
-        const { data: sessionData, error: sessionError } =
-          await supabase.auth.getSession();
+        const user = getStoredUser();
 
-        if (sessionError || !sessionData?.session) {
-          console.error(
-            "Session error or user not authenticated:",
-            sessionError
-          );
+        if (!user) {
           return;
         }
 
-        const authUserId = sessionData.session.user.id;
-        console.log("Authenticated user ID:", authUserId);
-
-        console.log("Fetching patient data...");
-        const { data, error: patientError } = await getPatientAuthID(
-          authUserId
-        );
+        const { data, error: patientError } = await getPatientAuthID(user.id);
 
         if (patientError) {
           console.error("Error fetching patient data:", patientError);
@@ -67,9 +55,6 @@ export default function Page() {
 
         // Assuming the `data` array returns one object, access it like data[0]
         const patientData = data[0];
-        console.log("Patient data fetched:", patientData);
-
-        // Set fetched patient data into component state
         setName(patientData.name);
         setSurname(patientData.surname);
         setDate(patientData.birthDate); // Assuming it's stored as YYYY-MM-DD
@@ -110,12 +95,9 @@ export default function Page() {
   function handleEdit(e) {
     e.preventDefault();
     if (isEditMode) {
-      console.log("Saving new patient data:", newPatientData);
       updatePatientDetails(newPatientData).then((result) => {
         if (result.error) {
           console.error("Error updating patient details:", result.error);
-        } else {
-          console.log("Patient details successfully updated!");
         }
       });
     }
@@ -135,7 +117,7 @@ export default function Page() {
           <div className="flex flex-col text-center items-center w-full">
             <div className="relative flex justify-center items-center h-40 w-40  rounded-full overflow-hidden mb-11">
               <Image
-                src={isPhoto || "/default-profile.png"}
+                src={isPhoto || "/logo.png"}
                 alt="Profile Image"
                 className="object-cover rounded-full"
                 fill

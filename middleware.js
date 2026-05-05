@@ -1,11 +1,5 @@
 import { NextResponse } from "next/server";
-import supabase from "./app/_lib/supabase";
-export async function middleware(req) {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
-
-  // If the session exists, allow access
+export async function middleware() {
   return NextResponse.next();
 }
 

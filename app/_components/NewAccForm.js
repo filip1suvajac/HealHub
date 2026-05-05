@@ -1,7 +1,6 @@
 "use client";
 import { useState } from "react";
 import { createUser, getAuthEmails } from "../_lib/data-service"; // Adjust import as necessary for your project
-import Image from "next/image";
 
 export default function NewAccForm() {
   const [password, setPassword] = useState("");
@@ -65,6 +64,8 @@ export default function NewAccForm() {
       const emails = await getAuthEmails();
       if (emails.includes(formValues.email)) {
         setError("Account with this email already exists!");
+        setLoading(false);
+        return;
       }
 
       const userData = await createUser(

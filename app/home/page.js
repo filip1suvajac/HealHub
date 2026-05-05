@@ -3,9 +3,9 @@ import { memo, useEffect, useState } from "react";
 import DataMenu from "../_components/DataMenu";
 import MainLayout from "../_components/MainLayout";
 import PageHeading from "../_components/PageHeading";
-import { createAppt } from "../_lib/data-service";
+import { createAppt, getPatientAuthID } from "../_lib/data-service";
 import ProtectedRoute from "../_components/ProtectedRoute";
-import supabase from "../_lib/supabase";
+import { getStoredUser } from "../_lib/apiAuth";
 
 const departs = [
   "Cardiology (Heart Health)",
@@ -53,26 +53,12 @@ const Page = memo(function Page() {
     setClientReady(true);
 
     async function fetchPatientId() {
-      const {
-        data: { session },
-        error,
-      } = await supabase.auth.getSession();
-
-      if (error) {
-        console.error("Error fetching session:", error);
-        return;
-      }
-
-      const user = session?.user;
+      const user = getStoredUser();
       if (user) {
-        const { data, error } = await supabase
-          .from("patients")
-          .select("id")
-          .eq("auth_user_id", user.id)
-          .single();
+        const { data, error } = await getPatientAuthID(user.id);
 
-        if (data) {
-          setPatientId(data.id);
+        if (data?.[0]) {
+          setPatientId(data[0].id);
         } else {
           console.error("Error fetching patient ID:", error);
         }
@@ -86,6 +72,11 @@ const Page = memo(function Page() {
   const date = getRandomDate();
 
   async function handleBooking() {
+    if (!desc || !department || !urgency) {
+      alert("Please fill in all appointment fields.");
+      return;
+    }
+
     if (!patientId) {
       alert("Unable to make an appointment. Please try again later.");
       return;
@@ -103,6 +94,9 @@ const Page = memo(function Page() {
     setLoading(true);
     await createAppt(newapt);
     setLoading(false);
+    setDesc("");
+    setDepartment("");
+    setUrgency("");
   }
 
   function getRandomDoctor() {
@@ -120,11 +114,11 @@ const Page = memo(function Page() {
       Math.random() * (twoYearsFromNow.getTime() - today.getTime());
     const randomDate = new Date(randomTime);
 
+    const year = randomDate.getFullYear();
     const month = String(randomDate.getMonth() + 1).padStart(2, "0");
     const day = String(randomDate.getDate()).padStart(2, "0");
-    const year = randomDate.getFullYear();
 
-    return `${month}/${day}/${year}`;
+    return `${year}-${month}-${day}`;
   }
 
   const Select = memo(({ placeholder, value, onChange, options }) => {
@@ -169,6 +163,7 @@ const Page = memo(function Page() {
         <div className="flex items-center mx-auto gap-5 mt-10">
           <input
             type="text"
+            value={desc}
             onChange={(e) => setDesc(e.target.value)}
             placeholder="Shortly describe your need"
             className="w-80 bg-white border text-[rgb(38,38,38)] border-[rgb(54,54,54)] hover:border-gray-500 px-4 py-4 pr-8 rounded-sm focus:outline-none focus:shadow-outline"

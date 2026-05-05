@@ -4,9 +4,10 @@ import { useRouter } from "next/navigation";
 
 export default function ButtonDelete({ niga }) {
   const router = useRouter();
-  function handleDelete() {
-    deleteAppoint(niga);
+  async function handleDelete() {
+    await deleteAppoint(niga);
     router.push(`/home`);
+    router.refresh();
   }
 
   return (

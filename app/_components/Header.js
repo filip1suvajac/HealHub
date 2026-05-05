@@ -7,9 +7,9 @@ import { useLogout } from "../_lib/useLogout";
 import LoadingSpinner from "./LoadingSpinner";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import supabase from "../_lib/supabase";
 import { getPatientAuthID } from "../_lib/data-service";
 import Image from "next/image";
+import { getStoredUser } from "../_lib/apiAuth";
 
 export default function Header() {
   const { logout, isLoading } = useLogout();
@@ -27,28 +27,14 @@ export default function Header() {
   useEffect(() => {
     const fetchPatientData = async () => {
       try {
-        console.log("Fetching session...");
-        const { data: sessionData, error: sessionError } =
-          await supabase.auth.getSession();
+        const user = getStoredUser();
 
-        if (sessionError || !sessionData?.session) {
-          console.error(
-            "Session error or user not authenticated:",
-            sessionError
-          );
+        if (!user) {
           return;
         }
 
-        const authUserId = sessionData.session.user.id;
-        console.log("Authenticated user ID:", authUserId);
+        const { data, error: patientError } = await getPatientAuthID(user.id);
 
-        console.log("Fetching patient data...");
-
-        const { data, error: patientError } = await getPatientAuthID(
-          authUserId
-        );
-
-        console.log("Patient data fetched:", data);
         if (patientError) {
           console.error("Error fetching patient data:", patientError);
           return;
@@ -60,12 +46,6 @@ export default function Header() {
         }
 
         const patientData = data[0];
-
-        // Log fetched data for debugging
-        console.log("Fetched patient name:", patientData.name);
-        console.log("Fetched patient surname:", patientData.surname);
-
-        // Update state
         setName(patientData.name);
         setSurname(patientData.surname);
         setPhoto(patientData.profileImageUrl);
@@ -87,7 +67,7 @@ export default function Header() {
             <Image
               fill
               className="object-fit"
-              src={isPhoto}
+              src={isPhoto || "/logo.png"}
               alt="Profile Image"
             />
           </div>

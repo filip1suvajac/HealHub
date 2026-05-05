@@ -7,16 +7,6 @@ const nextConfig = {
     }
     return config;
   },
-  images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "heuqlmqcfusnwzqbjrbe.supabase.co",
-        port: "",
-        pathname: "/storage/v1/object/(sign|public)/profile-images/profiles/**",
-      },
-    ],
-  },
 };
 
 export default nextConfig;

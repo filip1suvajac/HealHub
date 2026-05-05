@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# HealHub
 
-## Getting Started
+Preprost web app za naročanje in upravljanje zdravniških terminov.
 
-First, run the development server:
+Narejeno kot prvi pravi vadni projekt v Next.js 2024. Originalni Supabase backend je zamenjan z lokalno SQLite bazo, tako da vse teče lokalno brez cloud storitev.
+
+## Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+... in odpri [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Demo login:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```text
+Email: demo@healhub.local
+Password: password123
+```
 
-## Learn More
+## Kaj sploh dela?
 
-To learn more about Next.js, take a look at the following resources:
+- Login z lokalnim demo uporabnikom
+- Seznam zdravniških terminov
+- Dodaj / uredi / izbriši termin
+- Koledar z označenimi datumi terminov
+- Osnovni profil pacienta
+- Demo podatki ob prvem zagonu
+- Podatki se shranijo lokalno v SQLite
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Database reset
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+```bash
+npm run db:reset
+npm run dev
+```
 
-## Deploy on Vercel
+## Uporabljene tehnologije
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Next.js
+- React
+- SQLite
+- better-sqlite3
+- Tailwind CSS

@@ -1,29 +1,41 @@
-import supabase from "./supabase";
+const LOCAL_USER_KEY = "healhub-user";
 
-export async function login({ password, email }) {
-  let { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
+async function requestJson(url, options = {}) {
+  const response = await fetch(url, {
+    headers: { "Content-Type": "application/json", ...options.headers },
+    ...options,
   });
 
-  if (error) throw new Error(error.message);
+  const data = await response.json().catch(() => null);
 
-  console.log("Login Data:", data); // Log the login response
+  if (!response.ok) {
+    throw new Error(data?.error || "Request failed");
+  }
+
+  return data;
+}
+
+export function getStoredUser() {
+  if (typeof window === "undefined") return null;
+
+  const storedUser = window.localStorage.getItem(LOCAL_USER_KEY);
+  return storedUser ? JSON.parse(storedUser) : null;
+}
+
+export async function login({ password, email }) {
+  const data = await requestJson("/api/auth/login", {
+    method: "POST",
+    body: JSON.stringify({ email, password }),
+  });
+
+  window.localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(data.user));
   return data;
 }
 
 export async function getCurrentUser() {
-  const { data: session } = await supabase.auth.getSession();
-
-  if (!session.session) return null; // Return null if no session
-
-  const { data: user, error } = await supabase.auth.getUser();
-  if (error) throw new Error(error.message);
-
-  return user; // Return the user object
+  return getStoredUser();
 }
 
 export async function logout() {
-  const { error } = await supabase.auth.signOut();
-  if (error) throw new Error(error.message);
+  window.localStorage.removeItem(LOCAL_USER_KEY);
 }

@@ -11,7 +11,7 @@ export default function LoginForm() {
   const router = useRouter();
   const [formError, setFormError] = useState(null);
 
-  const { mutate: login, isLoading } = useMutation({
+  const { mutate: login, isPending } = useMutation({
     mutationFn: ({ email, password }) => loginApi({ email, password }),
     onSuccess: (user) => {
       queryClient.setQueryData(["user"], user.user);
@@ -28,8 +28,6 @@ export default function LoginForm() {
     const formData = new FormData(event.currentTarget);
     const email = formData.get("email");
     const password = formData.get("password");
-
-    console.log("Attempting to log in with:", { email, password }); // Add logging
 
     if (!email || !password) {
       setFormError("Email and password are required");
@@ -59,7 +57,7 @@ export default function LoginForm() {
         />
         {formError && <p className="text-red-500">{formError}</p>}
 
-        {isLoading ? (
+        {isPending ? (
           <button
             className="py-2 px-7 bg-[#5b8b7e] text-white rounded-sm"
             disabled
