@@ -1,10 +1,8 @@
 # HealHub
 
-Preprost web app za naročanje in upravljanje zdravniških terminov.
+Simple desktop web app for booking and managing doctor appointments.
 
-Narejeno kot prvi pravi vadni projekt v Next.js 2024. Originalni Supabase backend je zamenjan z lokalno SQLite bazo, tako da vse teče lokalno brez cloud storitev.
-
-Je LE desktop-app.
+Built with Next.js in 2024. The original Supabase backend was replaced with a local SQLite database, so everything runs locally without cloud services.
 
 ## Setup
 
@@ -13,7 +11,11 @@ npm install
 npm run dev
 ```
 
-... in odpri [http://localhost:3000](http://localhost:3000).
+Open:
+
+```text
+http://localhost:3000
+```
 
 Demo login:
 
@@ -22,24 +24,24 @@ Email: demo@healhub.local
 Password: password123
 ```
 
-## Kaj sploh dela?
+## Features
 
-- Login z lokalnim demo uporabnikom
-- Seznam zdravniških terminov
-- Dodaj / uredi / izbriši termin
-- Koledar z označenimi datumi terminov
-- Osnovni profil pacienta
-- Demo podatki ob prvem zagonu
-- Podatki se shranijo lokalno v SQLite
+- login with local demo user
+- list of doctor appointments
+- add / edit / delete appointments
+- calendar with appointment dates
+- basic patient profile
+- demo data on first start
+- local data storage with SQLite
 
-## Database reset
+## Database Reset
 
 ```bash
 npm run db:reset
 npm run dev
 ```
 
-## Uporabljene tehnologije
+## Tech
 
 - Next.js
 - React
